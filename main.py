@@ -2,9 +2,12 @@ import imutils
 import cv2
 import numpy as np
 import argparse
+from random import *
 from collections import deque
-from simple_pid import PID
 
+
+#random amplification
+RAND = 30
 #construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-b", "--buffer", type=int, default = 64)
@@ -15,7 +18,8 @@ title= "Mouse Tracking with Kalman Filter"
 height = 600
 width = 800
 grey = 150
-colorMouse = (64, 255, 255)
+colorMouse1 = (64, 255, 255)
+colorMouse2 = (255, 64, 255)
 
 traceMouse = deque(maxlen = args["buffer"])
 
@@ -26,9 +30,12 @@ def mouseMove(event, x, y, s, p):
     global frame, current_measurement
     current_measurement = np.array([[np.float32(x)], [np.float32(y)]])
     pointMouse = current_measurement[0], current_measurement[1]
+    pointMouseRandom = current_measurement[0] + randint(-RAND, RAND), current_measurement[1] + randint(-RAND, RAND)
+
     frame = np.ones((height,width,3),np.uint8) * grey
 
-    cv2.circle(frame, pointMouse, 10, colorMouse, -1)
+    #cv2.circle(frame, pointMouse, 1, colorMouse1, -1)
+    cv2.circle(frame, pointMouseRandom, 6, colorMouse2, -1)
     traceMouse.appendleft(pointMouse)
 
    # loop over the set of tracked points
